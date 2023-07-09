@@ -92,7 +92,7 @@ def main(argv):
             sys.exit()
         elif opt in ("-i", "--ifile"):
             inputfile = arg
-    outputfile = inputfile.rsplit('.', 1)[0] + ' Graph.png'
+    outputfile = inputfile.rsplit('.', 1)[0] + '_Graph.png'
 
     f = open(inputfile)
     data = json.load(f)
