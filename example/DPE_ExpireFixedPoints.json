@@ -1,0 +1,696 @@
+{
+	"FullName": "DPE_ExpireFixedPoints",
+	"Metadata": {
+		"processType": "Loyalty",
+		"status": "Active",
+		"label": "Expire Fixed Points",
+		"description": "Calculates and expires points for members based on the expiration date on the ledger.",
+		"isTemplate": false,
+		"datasources": [
+			{
+				"name": "LoyaltyLedger",
+				"label": "Loyalty Ledger",
+				"description": "The loyalty ledger object is used as a data source for calculating non-qualifying points to expire.",
+				"sourceName": "LoyaltyLedger",
+				"type": "StandardObject",
+				"fields": [
+					{
+						"name": "EventType",
+						"dataType": "Text",
+						"displaySequence": 1
+					},
+					{
+						"name": "ExpiryDate",
+						"dataType": "Date",
+						"displaySequence": 1
+					},
+					{
+						"name": "Id",
+						"dataType": "Text",
+						"displaySequence": 1
+					},
+					{
+						"name": "LoyaltyProgramCurrencyId",
+						"dataType": "Text",
+						"displaySequence": 1
+					},
+					{
+						"name": "LoyaltyProgramMemberId",
+						"dataType": "Text",
+						"displaySequence": 1
+					},
+					{
+						"name": "Points",
+						"dataType": "Numeric",
+						"displaySequence": 1
+					}
+				]
+			},
+			{
+				"name": "LoyaltyMemberCurrency",
+				"label": "Loyalty Member Currency",
+				"description": "The loyalty member currency is used as a data source for calculating non-qualifying points to expire.",
+				"sourceName": "LoyaltyMemberCurrency",
+				"type": "StandardObject",
+				"fields": [
+					{
+						"name": "ExpirablePoints",
+						"dataType": "Numeric",
+						"displaySequence": 1
+					},
+					{
+						"name": "Id",
+						"dataType": "Text",
+						"displaySequence": 1
+					},
+					{
+						"name": "LastExpirationProcessRunDate",
+						"dataType": "Date",
+						"displaySequence": 1
+					},
+					{
+						"name": "LoyaltyMemberId",
+						"dataType": "Text",
+						"displaySequence": 1
+					},
+					{
+						"name": "LoyaltyProgramCurrencyId",
+						"dataType": "Text",
+						"displaySequence": 1
+					},
+					{
+						"name": "Name",
+						"dataType": "Text",
+						"displaySequence": 1
+					},
+					{
+						"name": "PointsBalance",
+						"dataType": "Numeric",
+						"displaySequence": 1
+					},
+					{
+						"name": "TotalPointsExpired",
+						"dataType": "Numeric",
+						"displaySequence": 1
+					},
+					{
+						"name": "TotalPointsRedeemed",
+						"dataType": "Numeric",
+						"displaySequence": 1
+					}
+				]
+			},
+			{
+				"name": "LoyaltyProgram",
+				"label": "Loyalty Program",
+				"description": "The loyalty program is used as a data source for calculating non-qualifying points to expire.",
+				"sourceName": "LoyaltyProgram",
+				"type": "StandardObject",
+				"fields": [
+					{
+						"name": "Id",
+						"dataType": "Text",
+						"displaySequence": 1
+					},
+					{
+						"name": "Name",
+						"dataType": "Text",
+						"displaySequence": 1
+					}
+				]
+			},
+			{
+				"name": "LoyaltyProgramCurrency",
+				"label": "Loyalty Program Currency",
+				"description": "The loyalty program currency is used as a data source for calculating non-qualifying points to expire.",
+				"sourceName": "LoyaltyProgramCurrency",
+				"type": "StandardObject",
+				"fields": [
+					{
+						"name": "CurrencyType",
+						"dataType": "Text",
+						"displaySequence": 1
+					},
+					{
+						"name": "ExpiryModel",
+						"dataType": "Text",
+						"displaySequence": 1
+					},
+					{
+						"name": "Id",
+						"dataType": "Text",
+						"displaySequence": 1
+					},
+					{
+						"name": "LoyaltyProgramId",
+						"dataType": "Text",
+						"displaySequence": 1
+					}
+				]
+			}
+		],
+		"joins": [
+			{
+				"name": "FilterFixedNonQualifyingPointsAccruedPlusLMC",
+				"label": "Get Points for Ledger",
+				"description": "Gets the current balance from Loyalty Member Currency records.",
+				"type": "LeftOuter",
+				"primarySourceName": "Filter_Fixed_Points_Accrued_and_Transferred",
+				"secondarySourceName": "LoyaltyMemberCurrency",
+				"joinKeys": [
+					{
+						"primarySourceFieldName": "LoyaltyProgramCurrencyId",
+						"secondarySourceFieldName": "LoyaltyProgramCurrencyId"
+					},
+					{
+						"primarySourceFieldName": "LoyaltyMemberId",
+						"secondarySourceFieldName": "LoyaltyMemberId"
+					}
+				],
+				"fields": [
+					{
+						"sourceName": "Filter_Fixed_Points_Accrued_and_Transferred",
+						"sourceFieldName": "EventType",
+						"alias": "EventType"
+					},
+					{
+						"sourceName": "Filter_Fixed_Points_Accrued_and_Transferred",
+						"sourceFieldName": "ExpiryDate",
+						"alias": "ExpiryDate"
+					},
+					{
+						"sourceName": "Filter_Fixed_Points_Accrued_and_Transferred",
+						"sourceFieldName": "LoyaltyLedgerId",
+						"alias": "LoyaltyLedgerId"
+					},
+					{
+						"sourceName": "Filter_Fixed_Points_Accrued_and_Transferred",
+						"sourceFieldName": "LoyaltyMemberId",
+						"alias": "LoyaltyMemberId"
+					},
+					{
+						"sourceName": "Filter_Fixed_Points_Accrued_and_Transferred",
+						"sourceFieldName": "LoyaltyProgramCurrencyId",
+						"alias": "LoyaltyProgramCurrencyId"
+					},
+					{
+						"sourceName": "Filter_Fixed_Points_Accrued_and_Transferred",
+						"sourceFieldName": "LoyaltyProgramId",
+						"alias": "LoyaltyProgramId"
+					},
+					{
+						"sourceName": "Filter_Fixed_Points_Accrued_and_Transferred",
+						"sourceFieldName": "Points",
+						"alias": "Points"
+					},
+					{
+						"sourceName": "LoyaltyMemberCurrency",
+						"sourceFieldName": "ExpirablePoints",
+						"alias": "ExpirablePoints"
+					},
+					{
+						"sourceName": "LoyaltyMemberCurrency",
+						"sourceFieldName": "LastExpirationProcessRunDate",
+						"alias": "LastExpirationProcessRunDate"
+					},
+					{
+						"sourceName": "LoyaltyMemberCurrency",
+						"sourceFieldName": "Id",
+						"alias": "LoyaltyMemberCurrencyId"
+					},
+					{
+						"sourceName": "LoyaltyMemberCurrency",
+						"sourceFieldName": "PointsBalance",
+						"alias": "PointsBalance"
+					},
+					{
+						"sourceName": "LoyaltyMemberCurrency",
+						"sourceFieldName": "TotalPointsExpired",
+						"alias": "TotalPointsExpired"
+					},
+					{
+						"sourceName": "LoyaltyMemberCurrency",
+						"sourceFieldName": "TotalPointsRedeemed",
+						"alias": "TotalPointsRedeemed"
+					}
+				]
+			},
+			{
+				"name": "LPCAndLPPlusLL",
+				"label": "Add Loyalty Program Details to Ledger",
+				"description": "Adds the loyalty program name, currency type, and expiration model to ledgers.",
+				"type": "LeftOuter",
+				"primarySourceName": "LoyaltyLedger",
+				"secondarySourceName": "LPCPlusLP",
+				"joinKeys": [
+					{
+						"primarySourceFieldName": "LoyaltyProgramCurrencyId",
+						"secondarySourceFieldName": "LoyaltyProgramCurrencyId"
+					}
+				],
+				"fields": [
+					{
+						"sourceName": "LoyaltyLedger",
+						"sourceFieldName": "EventType",
+						"alias": "EventType"
+					},
+					{
+						"sourceName": "LoyaltyLedger",
+						"sourceFieldName": "ExpiryDate",
+						"alias": "ExpiryDate"
+					},
+					{
+						"sourceName": "LoyaltyLedger",
+						"sourceFieldName": "Id",
+						"alias": "LoyaltyLedgerId"
+					},
+					{
+						"sourceName": "LoyaltyLedger",
+						"sourceFieldName": "LoyaltyProgramMemberId",
+						"alias": "LoyaltyMemberId"
+					},
+					{
+						"sourceName": "LoyaltyLedger",
+						"sourceFieldName": "LoyaltyProgramCurrencyId",
+						"alias": "LoyaltyProgramCurrencyId"
+					},
+					{
+						"sourceName": "LoyaltyLedger",
+						"sourceFieldName": "Points",
+						"alias": "Points"
+					},
+					{
+						"sourceName": "LPCPlusLP",
+						"sourceFieldName": "CurrencyType",
+						"alias": "CurrencyType"
+					},
+					{
+						"sourceName": "LPCPlusLP",
+						"sourceFieldName": "ExpiryModel",
+						"alias": "ExpiryModel"
+					},
+					{
+						"sourceName": "LPCPlusLP",
+						"sourceFieldName": "LoyaltyProgramId",
+						"alias": "LoyaltyProgramId"
+					},
+					{
+						"sourceName": "LPCPlusLP",
+						"sourceFieldName": "LoyaltyProgramName",
+						"alias": "LoyaltyProgramName"
+					}
+				]
+			},
+			{
+				"name": "LPCPlusLP",
+				"label": "Add Loyalty Program Name to Program Currency",
+				"description": "Adds the loyalty program name to program currency records.",
+				"type": "LeftOuter",
+				"primarySourceName": "LoyaltyProgramCurrency",
+				"secondarySourceName": "LoyaltyProgram",
+				"joinKeys": [
+					{
+						"primarySourceFieldName": "LoyaltyProgramId",
+						"secondarySourceFieldName": "Id"
+					}
+				],
+				"fields": [
+					{
+						"sourceName": "LoyaltyProgramCurrency",
+						"sourceFieldName": "CurrencyType",
+						"alias": "CurrencyType"
+					},
+					{
+						"sourceName": "LoyaltyProgramCurrency",
+						"sourceFieldName": "ExpiryModel",
+						"alias": "ExpiryModel"
+					},
+					{
+						"sourceName": "LoyaltyProgramCurrency",
+						"sourceFieldName": "Id",
+						"alias": "LoyaltyProgramCurrencyId"
+					},
+					{
+						"sourceName": "LoyaltyProgram",
+						"sourceFieldName": "Id",
+						"alias": "LoyaltyProgramId"
+					},
+					{
+						"sourceName": "LoyaltyProgram",
+						"sourceFieldName": "Name",
+						"alias": "LoyaltyProgramName"
+					}
+				]
+			}
+		],
+		"filters": [
+			{
+				"name": "FilterPointsToExpire",
+				"label": "Filter Points To Expire",
+				"description": "Filters the ledgers to be considered for expiration.",
+				"sourceName": "LedgersWithPointsToExpire",
+				"filterCondition": "1 AND 2",
+				"criteria": [
+					{
+						"sourceFieldName": "LedgerRecordsInValidDateRange",
+						"operator": "Equals",
+						"value": "Y",
+						"sequence": 1
+					},
+					{
+						"sourceFieldName": "ExpiryDate",
+						"operator": "LessThanOrEquals",
+						"inputVariable": "ProcessRunDate",
+						"sequence": 2
+					}
+				]
+			},
+			{
+				"name": "Filter_Fixed_Points_Accrued_and_Transferred",
+				"label": "Filter Fixed Points Accrued and Transferred",
+				"description": "Filters ledgers that have credited and transferred non-qualifying points to members with fixed expiry model.",
+				"sourceName": "LPCAndLPPlusLL",
+				"filterCondition": "1 AND (2 OR 3)",
+				"criteria": [
+					{
+						"sourceFieldName": "LoyaltyProgramName",
+						"operator": "Equals",
+						"inputVariable": "LoyaltyProgramName",
+						"sequence": 1
+					},
+					{
+						"sourceFieldName": "EventType",
+						"operator": "Equals",
+						"value": "Credit",
+						"sequence": 2
+					},
+					{
+						"sourceFieldName": "EventType",
+						"operator": "Equals",
+						"value": "Transfer",
+						"sequence": 3
+					}
+				]
+			},
+			{
+				"name": "TotalPointsToExpiredGreaterThanZero",
+				"label": "Total Points To Expire Greater Than Zero",
+				"description": "Filters members with non-zero points to expire.",
+				"sourceName": "CurrentPointsToExpire",
+				"filterCondition": "1",
+				"criteria": [
+					{
+						"sourceFieldName": "ChangedExpiredPoints",
+						"operator": "GreaterThan",
+						"value": "0",
+						"sequence": 1
+					}
+				]
+			}
+		],
+		"writebacks": [
+			{
+				"name": "CreateLoyaltyLedger",
+				"label": "Create Loyalty Ledger",
+				"description": "Creates loyalty ledgers for expiring non-qualifying points.",
+				"sourceName": "TotalPointsToExpiredGreaterThanZero",
+				"targetObjectName": "LoyaltyLedger",
+				"operationType": "Insert",
+				"writebackSequence": 2,
+				"writebackUser": "0055E00000DqSrYQAV",
+				"storageType": "sObject",
+				"fields": [
+					{
+						"sourceFieldName": "ExpirationActionCode",
+						"targetFieldName": "Correlation"
+					},
+					{
+						"sourceFieldName": "newEventType",
+						"targetFieldName": "EventType"
+					},
+					{
+						"sourceFieldName": "ExternalTransactionNumber",
+						"targetFieldName": "ExternalTransactionNumber",
+						"parentName": "TransactionJournal",
+						"relationshipName": "TransactionJournal"
+					},
+					{
+						"sourceFieldName": "LoyaltyMemberId",
+						"targetFieldName": "LoyaltyProgramMemberId"
+					},
+					{
+						"sourceFieldName": "LoyaltyProgramCurrencyId",
+						"targetFieldName": "LoyaltyProgramCurrencyId"
+					},
+					{
+						"sourceFieldName": "ActivityDate",
+						"targetFieldName": "ActivityDate"
+					},
+					{
+						"sourceFieldName": "ChangedExpiredPoints",
+						"targetFieldName": "Points"
+					}
+				]
+			},
+			{
+				"name": "CreateTransactionJournal",
+				"label": "Create Transaction Journal",
+				"description": "Creates transaction journals for expiring non-qualifying points.",
+				"sourceName": "TotalPointsToExpiredGreaterThanZero",
+				"targetObjectName": "TransactionJournal",
+				"operationType": "Insert",
+				"writebackSequence": 1,
+				"writebackUser": "0055E00000DqSrYQAV",
+				"storageType": "sObject",
+				"fields": [
+					{
+						"sourceFieldName": "Status",
+						"targetFieldName": "Status"
+					},
+					{
+						"sourceFieldName": "ExternalTransactionNumber",
+						"targetFieldName": "ExternalTransactionNumber"
+					},
+					{
+						"sourceFieldName": "ActivityDate",
+						"targetFieldName": "ActivityDate"
+					},
+					{
+						"sourceFieldName": "LoyaltyMemberId",
+						"targetFieldName": "MemberId"
+					},
+					{
+						"sourceFieldName": "LoyaltyProgramId",
+						"targetFieldName": "LoyaltyProgramId"
+					}
+				]
+			},
+			{
+				"name": "UpdateLoyaltyMemberCurrency",
+				"label": "Update Loyalty Member Currency",
+				"description": "Updates total expired points in the loyalty member currency records.",
+				"sourceName": "TotalPointsToExpiredGreaterThanZero",
+				"targetObjectName": "LoyaltyMemberCurrency",
+				"operationType": "Update",
+				"writebackSequence": 3,
+				"writebackUser": "0055E00000DqSrYQAV",
+				"storageType": "sObject",
+				"fields": [
+					{
+						"sourceFieldName": "LoyaltyMemberCurrencyId",
+						"targetFieldName": "Id"
+					},
+					{
+						"sourceFieldName": "ActualProcessRunDate",
+						"targetFieldName": "LastExpirationProcessRunDate"
+					},
+					{
+						"sourceFieldName": "NewExpiredPoints",
+						"targetFieldName": "TotalPointsExpired"
+					},
+					{
+						"sourceFieldName": "NewExpirablePoints",
+						"targetFieldName": "ExpirablePoints"
+					}
+				]
+			}
+		],
+		"transforms": [
+			{
+				"name": "CurrentPointsToExpire",
+				"label": "Current Points To Expire",
+				"description": "Calculates the non-qualifying points, with a fixed expiry model, to be expired for the members since the last run.",
+				"sourceName": "TotalExpiredPoints",
+				"expressionFields": [
+					{
+						"expression": "{NewExpiredPoints}-{TotalPointsExpired}",
+						"alias": "ChangedExpiredPoints",
+						"dataType": "Numeric",
+						"length": 15,
+						"decimalPlaces": 2
+					},
+					{
+						"expression": "\"a0Y5E00000BdpOZ\"",
+						"alias": "ExpirationActionCode",
+						"dataType": "Text",
+						"length": 15
+					}
+				],
+				"partitionBy": [],
+				"transformationType": "Expression"
+			},
+			{
+				"name": "LedgersWithPointsToExpire",
+				"label": "Ledgers With Points To Expire",
+				"description": "Identifies the ledgers to be considered for expiration.",
+				"sourceName": "FilterFixedNonQualifyingPointsAccruedPlusLMC",
+				"expressionFields": [
+					{
+						"expression": "(IF(ISNULL({LastExpirationProcessRunDate}), \"Y\", IF(({ExpiryDate}>{LastExpirationProcessRunDate}), \"Y\", \"N\")))",
+						"alias": "LedgerRecordsInValidDateRange",
+						"dataType": "Text",
+						"length": 2
+					}
+				],
+				"partitionBy": [],
+				"transformationType": "Expression"
+			},
+			{
+				"name": "ProcessPointsToExpire",
+				"label": "Process Points To Expire",
+				"description": "Converts Credit ledgers into positive points and Transfer ledgers into negative points.",
+				"sourceName": "FilterPointsToExpire",
+				"expressionFields": [
+					{
+						"expression": "IF({EventType}==\"Credit\" ,{Points} , -1*{Points})",
+						"alias": "ProcessedExpiredPoints",
+						"dataType": "Numeric",
+						"length": 16,
+						"decimalPlaces": 2
+					}
+				],
+				"partitionBy": [],
+				"transformationType": "Expression"
+			},
+			{
+				"name": "TotalExpirablePoints",
+				"label": "Total Expirable Points",
+				"description": "Calculates the total points that can be expired.",
+				"sourceName": "TotalFixedNonQualifyingPointsToExpire",
+				"expressionFields": [
+					{
+						"expression": "({AggregatedLedgerPoints} + {ExpirablePoints})",
+						"alias": "NewExpirablePoints",
+						"dataType": "Numeric",
+						"length": 15,
+						"decimalPlaces": 2
+					}
+				],
+				"partitionBy": [],
+				"transformationType": "Expression"
+			},
+			{
+				"name": "TotalExpiredPoints",
+				"label": "Total Expired Points",
+				"description": "Calculates the total points that have expired.",
+				"sourceName": "TotalExpirablePoints",
+				"expressionFields": [
+					{
+						"expression": "now()",
+						"alias": "ActivityDate",
+						"dataType": "DateTime"
+					},
+					{
+						"expression": "DATEVALUE({$ProcessRunDate})",
+						"alias": "ActualProcessRunDate",
+						"dataType": "Date"
+					},
+					{
+						"expression": "UUID()",
+						"alias": "ExternalTransactionNumber",
+						"dataType": "Text",
+						"length": 30
+					},
+					{
+						"expression": "\"Expiry\"",
+						"alias": "newEventType",
+						"dataType": "Text",
+						"length": 10
+					},
+					{
+						"expression": "(IF(({NewExpirablePoints} - {TotalPointsExpired}-{TotalPointsRedeemed}) > 0, ({NewExpirablePoints}-{TotalPointsRedeemed}), {TotalPointsExpired}))",
+						"alias": "NewExpiredPoints",
+						"dataType": "Numeric",
+						"length": 15,
+						"decimalPlaces": 2
+					},
+					{
+						"expression": "\"Points Expiration\"",
+						"alias": "NqpExpiryJournalType",
+						"dataType": "Text",
+						"length": 20
+					},
+					{
+						"expression": "\"Pending\"",
+						"alias": "Status",
+						"dataType": "Text",
+						"length": 10
+					}
+				],
+				"partitionBy": [],
+				"transformationType": "Expression"
+			}
+		],
+		"aggregates": [
+			{
+				"name": "TotalFixedNonQualifyingPointsToExpire",
+				"label": "Total Fixed Non-Qualifying Points To Expire",
+				"description": "Aggregates the non-qualifying points to be considered for expiration. These points are grouped by member and currency.",
+				"sourceName": "ProcessPointsToExpire",
+				"fields": [
+					{
+						"sourceFieldName": "ProcessedExpiredPoints",
+						"aggregateFunction": "Sum",
+						"alias": "AggregatedLedgerPoints"
+					},
+					{
+						"sourceFieldName": "ExpirablePoints",
+						"aggregateFunction": "Max",
+						"alias": "ExpirablePoints"
+					},
+					{
+						"sourceFieldName": "TotalPointsExpired",
+						"aggregateFunction": "Max",
+						"alias": "TotalPointsExpired"
+					},
+					{
+						"sourceFieldName": "TotalPointsRedeemed",
+						"aggregateFunction": "Max",
+						"alias": "TotalPointsRedeemed"
+					}
+				],
+				"groupBy": [
+					"LoyaltyMemberCurrencyId",
+					"LoyaltyProgramId",
+					"LoyaltyProgramCurrencyId",
+					"LoyaltyMemberId"
+				]
+			}
+		],
+		"parameters": [
+			{
+				"name": "LoyaltyProgramName",
+				"label": "Loyalty Program Name",
+				"description": "The name of the loyalty program.",
+				"dataType": "Text",
+				"defaultValue": "CEPSA GOW"
+			},
+			{
+				"name": "ProcessRunDate",
+				"label": "Process Run Date",
+				"description": "The Process Run Date is used to update the LastExpirationProcessRunDate, and also to determine the unused points that are to be expired.",
+				"dataType": "Date"
+			}
+		]
+	}
+}
